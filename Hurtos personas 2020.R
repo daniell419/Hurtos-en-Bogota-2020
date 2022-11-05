@@ -13,9 +13,14 @@ crimen_bogota = subset(crimen_bogota, select = c(CMHP20CONT, CMIUUPLA, CMNOMUPLA
 
 
 ## una paleta de colores azul.
-pal <- colorNumeric(
+bins <- c(0, 100, 200, 300, 400, 500, 600, 700, Inf)
+palcustomizable <- colorBin(
   palette = "Blues",
-  domain = crimen_bogota$CMHP20CONT)
+  domain = crimen_bogota$CMHP20CONT, bins = bins)
+
+pal_auto <- colorNumeric(
+  palette = "Blues",
+  domain = crimen_bogota$CMHP19CONT)
 
 ## anadir los labels
 labels <- sprintf(
@@ -25,7 +30,7 @@ labels <- sprintf(
 
 
 leaflet() %>% addTiles() %>% addPolygons(data=crimen_bogota,
-                                         fillColor = ~pal(CMHP20CONT),
+                                         fillColor = ~pal_auto(CMHP20CONT),
                                          weight = 2,
                                          opacity = 1,
                                          color = "white",
@@ -41,4 +46,5 @@ leaflet() %>% addTiles() %>% addPolygons(data=crimen_bogota,
                                          labelOptions = labelOptions(
                                            style = list("font-weight" = "normal", padding = "3px 8px"),
                                            textsize = "15px",
-                                           direction = "auto"))
+                                           direction = "auto")) %>% 
+  addLegend(pal = pal_auto, values = crimen_bogota$CMHP20CONT, opacity = 0.7, title = NULL, position = "bottomright")
